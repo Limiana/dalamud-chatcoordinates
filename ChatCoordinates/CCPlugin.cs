@@ -13,6 +13,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 namespace ChatCoordinates
 {
@@ -22,9 +23,9 @@ namespace ChatCoordinates
         public Config Configuration { get; init; }
         public ConfigUi ConfigUi { get; init; }
         public DalamudPluginInterface Interface { get; init; }
-        public CommandManager CommandManager { get; init; }
-        public ClientState ClientState { get; init; }
-        public ChatGui ChatGui { get; init; }
+        public ICommandManager CommandManager { get; init; }
+        public IClientState ClientState { get; init; }
+        public IChatGui ChatGui { get; init; }
 
         private Lazy<AetheryteManager> _aetheryteManager = null!;
         private Lazy<TerritoryManager> _territoryManager = null!;
@@ -35,11 +36,11 @@ namespace ChatCoordinates
 
         public CCPlugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager,
-            [RequiredVersion("1.0")] DataManager dataManager,
-            [RequiredVersion("1.0")] GameGui gameGui,
-            [RequiredVersion("1.0")] ClientState clientState,
-            [RequiredVersion("1.0")] ChatGui chatGui
+            [RequiredVersion("1.0")] ICommandManager commandManager,
+            [RequiredVersion("1.0")] IDataManager dataManager,
+            [RequiredVersion("1.0")] IGameGui gameGui,
+            [RequiredVersion("1.0")] IClientState clientState,
+            [RequiredVersion("1.0")] IChatGui chatGui
         )
         {
             Interface = pluginInterface;
@@ -136,7 +137,7 @@ namespace ChatCoordinates
         
         public void PrintChat(string msg)
         {
-            ChatGui.PrintChat(new XivChatEntry()
+            ChatGui.Print(new XivChatEntry()
             {
                 Message = msg,
                 Type = Configuration.GeneralChatType
@@ -145,7 +146,7 @@ namespace ChatCoordinates
 
         public void PrintError(string msg)
         {
-            ChatGui.PrintChat(new XivChatEntry()
+            ChatGui.Print(new XivChatEntry()
             {
                 Message = msg,
                 Type = Configuration.ErrorChatType
@@ -154,7 +155,7 @@ namespace ChatCoordinates
         
         public void PrintChat(XivChatEntry msg)
         {
-            ChatGui.PrintChat(msg);
+            ChatGui.Print(msg);
         }
 
         public void Dispose()
